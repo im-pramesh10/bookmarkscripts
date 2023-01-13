@@ -1,0 +1,22 @@
+#!/bin/bash
+
+types=$(printf "normal\ntor" | dmenu -i -p "Type: ")
+
+onion() {
+  browser="flatpak run com.github.micahflee.torbrowser-launcher"
+  bm_path=$HOME/.bookmarks/.onbookmarks.gpg #file where encrypted bookmarks are stored.
+  link=$(gpg --no-symkey-cache --decrypt $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
+  [[ $link = "" ]] && exit 1
+  $browser $link
+}
+
+normal() {
+  bm_path=$HOME/.bookmarks/.normalbookmarks #file where bookmarks are stored.
+  link=$(cat $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
+  [[ $link = "" ]] && exit 1
+  $BROWSER $link
+}
+
+[[ $types = "" ]] && exit 1
+[[ $types = "normal" ]] && normal && exit 0
+[[ $types = "tor" ]] && onion && exit 0

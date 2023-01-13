@@ -1,0 +1,35 @@
+#!/bin/bash
+types=$(printf "Normal\nI2P/Onion" | dmenu -i -p "Type: ")
+
+normal() {
+  bm_path="$HOME/.bookmarks/.normalbookmarks"
+  link=$(printf "quit" | dmenu -i -p "Link: ")
+  [[ $link = "quit" ]] && exit 1 
+  [[ $link = "" ]] && exit 1
+  title=$(printf "untitled\nquit" | dmenu -i -p "Title: ")
+  [[ $title = "quit" ]] && exit 1
+  [[ $title = "" ]] && title="untitled"
+  title=$(echo "$title" | sed "s/ /_/g")
+  echo "$title $link" >> $bm_path
+}
+
+onion() {
+  bm_path="$HOME/.bookmarks/.onbookmarks.gpg"
+  gpg $bm_path
+  rm $bm_path
+  bm_path="$HOME/.bookmarks/.onbookmarks"
+  link=$(printf "quit" | dmenu -i -p "Link(onion/i2p): ")
+  [[ $link = "quit" ]] && exit 1 
+  [[ $link = "" ]] && exit 1
+  title=$(printf "untitled\nquit" | dmenu -i -p "Title: ")
+  [[ $title = "quit" ]] && exit 1
+  [[ $title = "" ]] && title="untitled"
+  title=$(echo "$title" | sed "s/ /_/g")
+  echo "$title $link" >> $bm_path
+  gpg -c --no-symkey-cache --cipher-algo AES256 $bm_path
+  rm $bm_path
+}
+
+[[ $types = "Normal" ]] && normal && exit 0
+[[ $types = "I2P/Onion" ]] && onion && exit 0
+[[ $types = "" ]] && exit 1
