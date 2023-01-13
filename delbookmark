@@ -1,0 +1,25 @@
+#!/bin/bash
+#this is a script to delete bookmarks
+
+types=$(printf "Normal\nI2P/Onion" | dmenu -i -p "(DEL)Type: ")
+
+normal() {
+  bm_path=$HOME/.bookmarks/.normalbookmarks #file where bookmarks are stored.
+  LINE=$(cat $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
+  [[ $LINE = "" ]] && exit 1
+  choice=$(printf "Yes\nNo" | dmenu -i -p "Are you sure to DELETE?")
+  [[ $choice = "Yes" ]] && sed -i "/$LINE/d" $bm_path
+  [[ $choice = "No" ]] && exit 1
+  [[ $choice = "" ]] && exit 1
+}
+
+onion(){
+  bm_path=$HOME/.bookmarks/.onbookmarks.gpg #file where encrypted bookmarks are stored.
+  link=$(gpg --no-symkey-cache --decrypt $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
+  #need to add few logics to work with encrypted file
+  [[ $link = "" ]] && exit 1
+}
+
+[[ $types = "" ]] && exit 1
+[[ $types = "Normal" ]] && normal && exit 0
+[[ $types = "I2P/Onion" ]] && onion && exit 0
