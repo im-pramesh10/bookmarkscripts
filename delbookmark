@@ -7,6 +7,7 @@ normal() {
   bm_path=$HOME/.bookmarks/.normalbookmarks #file where bookmarks are stored.
   LINE=$(cat $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
   [[ $LINE = "" ]] && exit 1
+  LINE=$(echo $LINE | sed 's/\./\\./g;s/\//\\\//g') #escape .'s and /'s in link
   choice=$(printf "Yes\nNo" | dmenu -i -p "Are you sure to DELETE?")
   [[ $choice = "Yes" ]] && sed -i "/$LINE/d" $bm_path
   [[ $choice = "No" ]] && exit 1
