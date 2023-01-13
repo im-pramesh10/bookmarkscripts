@@ -15,10 +15,16 @@ normal() {
 }
 
 onion(){
-  bm_path=$HOME/.bookmarks/.onbookmarks.gpg #file where encrypted bookmarks are stored.
-  link=$(gpg --no-symkey-cache --decrypt $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
-  #need to add few logics to work with encrypted file
-  [[ $link = "" ]] && exit 1
+  bm_pathgpg=$HOME/.bookmarks/.onbookmarks.gpg #file where encrypted bookmarks are stored.
+  bm_path=$HOME/.bookmarks/.onbookmarks
+  gpg $bm_pathgpg
+  LINE=$(cat $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
+  [[ $LINE = "" ]] && rm $bm_path && exit 1 
+  LINE=$(echo $LINE | sed 's/\./\\./g;s/\//\\\//g') #escape .'s and /'s in link
+  choice=$(printf "Yes\nNo" | dmenu -i -p "Are you sure to DELETE?")
+  [[ $choice = "Yes" ]] && sed -i "/$LINE/d" $bm_path && rm $bm_pathgpg && gpg -c --cipher-algo AES256 $bm_path && rm $bm_path
+  [[ $choice = "No" ]] && exit 1
+  [[ $choice = "" ]] && exit 1
 }
 
 [[ $types = "" ]] && exit 1

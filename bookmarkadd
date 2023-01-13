@@ -13,7 +13,7 @@ normal() {
   echo "$title $link" >> $bm_path
 }
 
-onion() {
+onion() {#this needs some tweaking that's for later
   bm_path="$HOME/.bookmarks/.onbookmarks.gpg"
   gpg $bm_path
   rm $bm_path

@@ -7,7 +7,7 @@ onion() {
   bm_path=$HOME/.bookmarks/.onbookmarks.gpg #file where encrypted bookmarks are stored.
   link=$(gpg --no-symkey-cache --decrypt $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
   [[ $link = "" ]] && exit 1
-  echo $link | xsel --clipboard
+  echo $link | xsel --clipboard #Copies link to clipboard. Flatpak tor didnot take link as argument
 }
 
 normal() {
