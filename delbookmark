@@ -22,7 +22,7 @@ onion(){
   [[ $LINE = "" ]] && rm $bm_path && exit 1 
   LINE=$(echo $LINE | sed 's/\./\\./g;s/\//\\\//g') #escape .'s and /'s in link
   choice=$(printf "Yes\nNo" | dmenu -i -p "Are you sure to DELETE?")
-  [[ $choice = "Yes" ]] && sed -i "/$LINE/d" $bm_path && rm $bm_pathgpg && gpg -c --cipher-algo AES256 $bm_path && rm $bm_path
+  [[ $choice = "Yes" ]] && sed -i "/$LINE/d" $bm_path && rm $bm_pathgpg && gpg -c --cipher-algo AES256 $bm_path && rm $bm_path #encrypted after deleting a line
   [[ $choice = "No" ]] && exit 1
   [[ $choice = "" ]] && exit 1
 }
