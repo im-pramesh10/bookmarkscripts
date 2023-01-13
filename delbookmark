@@ -16,7 +16,7 @@ normal() {
 
 onion(){
   bm_pathgpg=$HOME/.bookmarks/.onbookmarks.gpg #file where encrypted bookmarks are stored.
-  bm_path=$HOME/.bookmarks/.onbookmarks
+  bm_path=$HOME/.bookmarks/.onbookmarks #path where decrypted file will be
   gpg $bm_pathgpg
   LINE=$(cat $bm_path | dmenu -l 10 -i -p "Bookmarks:" | awk '{print $2}')
   [[ $LINE = "" ]] && rm $bm_path && exit 1 
