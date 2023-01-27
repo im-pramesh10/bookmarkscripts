@@ -13,21 +13,34 @@ normal() {
   echo "$title $link" >> $bm_path
 }
 
-onion() {#this needs some tweaking that's for later
-  bm_path="$HOME/.bookmarks/.onbookmarks.gpg"
-  gpg $bm_path
-  rm $bm_path
-  bm_path="$HOME/.bookmarks/.onbookmarks"
+# Working thoughts
+# paila bmpathgpg decrypt garne
+# ani bmpath lai .onbookmarks ma rakhne
+# take link
+# link ma quit cha bhane quit garne or link empty cha bhane ni quit garne
+# But first remove file on bm_path before quitting
+# quit nabhaye get the title ani store in title variable
+# same thing if title is quit and if empty set it untitled
+# echo the title to the file replacing empty spaces with '_'
+# rename the .onbookmarks.gpg file to .onbookmarks.gpg.bak
+# encrypt the .onbookmarks file and if succesful remove .onbookmarks.gpg.bak and .onbookmarks
+
+onion() { #this needs some tweaking that's for later
+  bm_pathgpg="$HOME/.bookmarks/.onbookmarks.gpg" #renamed to bm_pathgpg
+  gpg $bm_pathgpg #decrypts file and outputs .onbookmarks
+  bm_path="$HOME/.bookmarks/.onbookmarks" 
   link=$(printf "quit" | dmenu -i -p "Link(onion/i2p): ")
-  [[ $link = "quit" ]] && exit 1 
-  [[ $link = "" ]] && exit 1
+  [[ $link = "quit" ]] && rm $bm_path && exit 1 
+  [[ $link = "" ]] && rm $bm_path && exit 1
   title=$(printf "untitled\nquit" | dmenu -i -p "Title: ")
-  [[ $title = "quit" ]] && exit 1
+  [[ $title = "quit" ]] && rm $bm_path && exit 1
   [[ $title = "" ]] && title="untitled"
   title=$(echo "$title" | sed "s/ /_/g")
   echo "$title $link" >> $bm_path
-  gpg -c --no-symkey-cache --cipher-algo AES256 $bm_path
-  rm $bm_path
+  mv $bm_pathgpg ./.onbookmarks.gpg.bak # renaming the gpg file
+  bm_pathgpgbak="$HOME/.bookmarks/.onbookmarks.gpg.bak"
+  gpg -c --no-symkey-cache --cipher-algo AES256 $bm_path && rm $bm_path && rm $bm_path
+  
 }
 
 [[ $types = "Normal" ]] && normal && exit 0
