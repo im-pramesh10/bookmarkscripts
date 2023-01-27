@@ -25,7 +25,7 @@ normal() {
 # rename the .onbookmarks.gpg file to .onbookmarks.gpg.bak
 # encrypt the .onbookmarks file and if succesful remove .onbookmarks.gpg.bak and .onbookmarks
 
-onion() { #this needs some tweaking that's for later
+onion() { 
   bm_pathgpg="$HOME/.bookmarks/.onbookmarks.gpg" #renamed to bm_pathgpg
   gpg $bm_pathgpg #decrypts file and outputs .onbookmarks
   bm_path="$HOME/.bookmarks/.onbookmarks" 
@@ -37,10 +37,13 @@ onion() { #this needs some tweaking that's for later
   [[ $title = "" ]] && title="untitled"
   title=$(echo "$title" | sed "s/ /_/g")
   echo "$title $link" >> $bm_path
-  mv $bm_pathgpg ./.onbookmarks.gpg.bak # renaming the gpg file
+  mv "$HOME/.bookmarks/.onbookmarks.gpg" "$HOME/.bookmarks/.onbookmarks.gpg.bak" # renaming the gpg file
   bm_pathgpgbak="$HOME/.bookmarks/.onbookmarks.gpg.bak"
-  gpg -c --no-symkey-cache --cipher-algo AES256 $bm_path && rm $bm_path && rm $bm_path
-  
+  gpg -c --no-symkey-cache --cipher-algo AES256 $bm_path
+  sleep 0.7
+  [ -e $bm_pathgpg ] && rm $bm_path && rm $bm_pathgpgbak && exit 0
+  mv "$HOME/.bookmarks/.onbookmarks.gpg.bak" "$HOME/.bookmarks/.onbookmarks.gpg" # renaming the bak file
+  rm $bm_path
 }
 
 [[ $types = "Normal" ]] && normal && exit 0
