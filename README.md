@@ -9,3 +9,12 @@
 # Dependencies
 - dmenu
 - xsel
+- awk
+- sed
+- gpg
+
+# Usage
+- Create a folder named '.bookmarks' with file '.normalbookmarks' and '.onbookmarks' at your $HOME
+- Copy the Scripts to path
+- Now can be run from terminal.
+- Alternatively, bind a shortcut key to each script to run them without opening the terminal.
